@@ -11,7 +11,7 @@ export const auth = betterAuth({
   
   // ✅ Explicitly set base URL for production
   baseURL: process.env.NODE_ENV === 'production' 
-    ? "https://thought-police.vercel.app" 
+    ? "https://thoughtpolice.vercel.app" 
     : "http://localhost:3000",
     
   socialProviders: {
