@@ -1,4 +1,4 @@
-// File: D:\coding\launch\thoughtPolice\src\app\api\auth\[...all]\route.ts
+// File: D:\coding\open-source\thought-police\src\app\api\auth\[...all]\route.ts
 import * as entry from '../../../../../../src/app/api/auth/[...all]/route.js'
 import type { NextRequest } from 'next/server.js'
 
