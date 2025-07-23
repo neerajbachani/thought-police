@@ -10,9 +10,7 @@ export const auth = betterAuth({
   }),
   
   // ✅ Explicitly set base URL for production
-  baseURL: process.env.NODE_ENV === 'production' 
-    ? "https://thoughtpolice.vercel.app" 
-    : "http://localhost:3000",
+  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
     
   socialProviders: {
     reddit: {
@@ -20,9 +18,7 @@ export const auth = betterAuth({
       clientSecret: process.env.REDDIT_CLIENT_SECRET!,
       scope: ["identity", "read"],
       // ✅ Explicitly set redirect URI
-      redirectURI: process.env.NODE_ENV === 'production'
-        ? "https://thought-police.vercel.app/api/auth/callback/reddit"
-        : "http://localhost:3000/api/auth/callback/reddit"
+      redirectURI: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/reddit` || "http://localhost:3000/api/auth/callback/reddit"
     },
   },
   
