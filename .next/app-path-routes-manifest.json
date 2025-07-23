@@ -1,0 +1,11 @@
+{
+  "/api/analyze/route": "/api/analyze",
+  "/api/reddit/[...path]/route": "/api/reddit/[...path]",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/[...all]/route": "/api/auth/[...all]",
+  "/leaderboard/page": "/leaderboard",
+  "/login/page": "/login",
+  "/page": "/",
+  "/stats/page": "/stats",
+  "/profile/page": "/profile"
+}
