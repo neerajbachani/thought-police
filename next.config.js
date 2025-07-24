@@ -14,7 +14,7 @@ const nextConfig = {
     return [
       {
         source: '/api/reddit/:path*',
-        destination: 'https://www.reddit.com/:path*',
+        destination: 'https://oauth.reddit.com/:path*',
       },
     ]
   },
