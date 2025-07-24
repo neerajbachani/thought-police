@@ -86,8 +86,18 @@ class RedditApiService {
   private async makeRequest(url: string, source: 'reddit' = 'reddit'): Promise<any> {
     try {
       this.debug('Making request to:', url);
-      const response = await this.axiosInstance.get(url);
-      this.debug('Request successful:', { url, status: response.status });
+   
+      
+      // ✅ Use oauth.reddit.com for authenticated requests
+      const authUrl = url.replace('www.reddit.com', 'oauth.reddit.com');
+      
+      const response = await this.axiosInstance.get(authUrl, {
+        headers: {
+          // 'Authorization': `Bearer ${token}`,
+          'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
+        }
+      });
+      this.debug('Request successful:', { url: authUrl, status: response.status });
       return response.data;
     } catch (error) {
       this.debug('Request failed:', { url, error: error instanceof Error ? error.message : 'Unknown error' });
