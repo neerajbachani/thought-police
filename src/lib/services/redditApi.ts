@@ -263,6 +263,7 @@ class RedditApiService {
   // User info method
   async getUserInfo(username: string): Promise<RedditUser> {
     const url = `${this.baseUrl}/user/${username}/about.json`;
+    console.log("---",url);
     this.debug('Fetching user info for:', username);
     const data = await this.makeRequest(url, 'reddit');
     

@@ -1,11 +1,3 @@
 {
-  "/api/analyze/route": "app/api/analyze/route.js",
-  "/api/reddit/[...path]/route": "app/api/reddit/[...path]/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/auth/[...all]/route": "app/api/auth/[...all]/route.js",
-  "/leaderboard/page": "app/leaderboard/page.js",
-  "/login/page": "app/login/page.js",
-  "/page": "app/page.js",
-  "/stats/page": "app/stats/page.js",
-  "/profile/page": "app/profile/page.js"
+  "/page": "app/page.js"
 }

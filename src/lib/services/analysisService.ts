@@ -38,6 +38,7 @@ export class AnalysisService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          
         },
         body: JSON.stringify({ 
           username: cleanUsername,
@@ -160,6 +161,7 @@ export class AnalysisService {
       
       // Get user info
       const userResponse = await fetch(`/api/reddit/user/${cleanUsername}/about.json`);
+      console.log('User preview response:', userResponse);
       if (!userResponse.ok) {
         return {
           exists: false,

@@ -56,7 +56,9 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
     
     try {
       const cleanUsername = usernameToValidate.replace(/^(https?:\/\/)?(www\.)?reddit\.com\/(u|user)\//, '');
+      console.log("clean",cleanUsername);
       const preview = await analysisService.getUserPreview(cleanUsername);
+      console.log("preview",preview);
       
       if (!preview.exists) {
         setValidationError('User not found on Reddit');
@@ -80,6 +82,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
     if (username.trim() && userPreview?.exists && userPreview?.recentActivity) {
       const cleanUsername = username.replace(/^(https?:\/\/)?(www\.)?reddit\.com\/(u|user)\//, '');
       onSearch(cleanUsername);
+      console.log("search",cleanUsername);
     }
   };
 
