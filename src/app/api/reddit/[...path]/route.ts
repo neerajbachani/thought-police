@@ -1,6 +1,36 @@
 // app/api/reddit/[...path]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 
+async function getRedditToken() {
+  try {
+    const authString = Buffer.from(
+      `${process.env.REDDIT_CLIENT_ID}:${process.env.REDDIT_CLIENT_SECRET}`
+    ).toString('base64')
+    
+    const response = await fetch('https://www.reddit.com/api/v1/access_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
+        'Authorization': `Basic ${authString}`
+      },
+      body: 'grant_type=client_credentials'
+    })
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('OAuth failed:', response.status, errorText)
+      throw new Error(`OAuth failed: ${response.status} - ${errorText}`)
+    }
+    
+    const data = await response.json()
+    return data.access_token
+  } catch (error) {
+    console.error('Failed to get Reddit token:', error)
+    throw error
+  }
+}
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ path: string[] }> }
@@ -18,47 +48,13 @@ export async function GET(
   })
   
   try {
-    // Step 1: Get Reddit OAuth token
-    let redditToken = null;
-    
-    try {
-      console.log('Attempting Reddit OAuth...')
-      
-      const authString = Buffer.from(
-        `${process.env.REDDIT_CLIENT_ID}:${process.env.REDDIT_CLIENT_SECRET}`
-      ).toString('base64')
-      
-      const tokenResponse = await fetch('https://www.reddit.com/api/v1/access_token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
-          'Authorization': `Basic ${authString}`
-        },
-        body: 'grant_type=client_credentials'
-      })
-      
-      console.log('Token response status:', tokenResponse.status)
-      
-      if (tokenResponse.ok) {
-        const tokenData = await tokenResponse.json()
-        redditToken = tokenData.access_token
-        console.log('OAuth token obtained successfully')
-      } else {
-        const errorText = await tokenResponse.text()
-        console.error('OAuth failed:', tokenResponse.status, errorText)
-        throw new Error('OAuth failed')
-      }
-    } catch (authError) {
-      console.error('OAuth error:', authError)
-      throw authError  // Fail if auth fails
-    }
+    // Step 1: Get Reddit OAuth token (required for every request)
+    const redditToken = await getRedditToken()
+    console.log('OAuth token obtained successfully')
 
-    // Step 2: Make authenticated request to Reddit OAuth endpoint
+    // Step 2: Construct the authenticated URL (use oauth.reddit.com)
     const pathString = path.join('/')
     const queryString = searchParams.toString()
-    
-    // ✅ Use oauth.reddit.com for authenticated requests
     const apiUrl = `https://oauth.reddit.com/${pathString}${queryString ? '?' + queryString : ''}`
     
     console.log('Making authenticated request to:', apiUrl)
@@ -66,7 +62,7 @@ export async function GET(
     const headers: Record<string, string> = {
       'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
       'Accept': 'application/json',
-      'Authorization': `Bearer ${redditToken}`  // ✅ Required
+      'Authorization': `Bearer ${redditToken}`  // ✅ Critical: Use the token here
     }
     
     const response = await fetch(apiUrl, { headers })
@@ -83,11 +79,11 @@ export async function GET(
         return NextResponse.json({ error: 'User not found' }, { status: 404 })
       } else if (response.status === 403) {
         return NextResponse.json({ 
-          error: 'Access forbidden - Reddit API authentication failed',
+          error: 'Access forbidden - Check authentication and Reddit app settings',
           details: errorText
         }, { status: 403 })
       } else if (response.status === 429) {
-        return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+        return NextResponse.json({ error: 'Rate limited by Reddit' }, { status: 429 })
       }
       
       return NextResponse.json({ 
