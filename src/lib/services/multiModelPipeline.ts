@@ -36,12 +36,12 @@ class MultiModelPipeline {
   private verbose: boolean = false;
   
   // Optimized model selection - single strong model for summarization
-  private summarizerModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
-  private contradictionModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
+  private summarizerModel = 'qwen/qwen3-235b-a22b-07-25:free';
+  private contradictionModel = 'qwen/qwen3-235b-a22b-07-25:free';
   
   // Fallback to stronger models if budget allows
-  private premiumSummarizerModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
-  private premiumContradictionModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
+  private premiumSummarizerModel = 'qwen/qwen3-235b-a22b-07-25:free';
+  private premiumContradictionModel = 'qwen/qwen3-235b-a22b-07-25:free';
 
   constructor() {
     try {
