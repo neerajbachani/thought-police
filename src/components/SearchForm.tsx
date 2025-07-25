@@ -50,32 +50,34 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
     return () => clearTimeout(timeoutId);
   }, [username]);
 
-  const validateUser = async (usernameToValidate: string) => {
-    setIsValidating(true);
-    setValidationError('');
+  // components/SearchForm.tsx
+const validateUser = async (usernameToValidate: string) => {
+  setIsValidating(true);
+  setValidationError('');
+  
+  try {
+    const cleanUsername = usernameToValidate.replace(/^(https?:\/\/)?(www\.)?reddit\.com\/(u|user)\//, '');
+    console.log("clean", cleanUsername);
+    const preview = await analysisService.getUserPreview(cleanUsername);
+    console.log("preview", preview);
     
-    try {
-      const cleanUsername = usernameToValidate.replace(/^(https?:\/\/)?(www\.)?reddit\.com\/(u|user)\//, '');
-      console.log("clean",cleanUsername);
-      const preview = await analysisService.getUserPreview(cleanUsername);
-      console.log("preview",preview);
-      
-      if (!preview.exists) {
-        setValidationError('User not found on Reddit');
-        setUserPreview(null);
-      } else if (!preview.recentActivity) {
-        setValidationError('User has no recent public activity to analyze');
-        setUserPreview(preview);
-      } else {
-        setUserPreview(preview);
-      }
-    } catch {
-      setValidationError('Unable to validate user');
+    if (!preview.exists) {
+      setValidationError('User not found on Reddit');
       setUserPreview(null);
-    } finally {
-      setIsValidating(false);
+    } else if (!preview.recentActivity) {
+      setValidationError('User has no recent public activity to analyze');
+      setUserPreview(preview);
+    } else {
+      setUserPreview(preview);
     }
-  };
+  } catch (error) {
+    console.error('Validation error:', error);
+    setValidationError('Unable to connect to Reddit API. Please try again later.');
+    setUserPreview(null);
+  } finally {
+    setIsValidating(false);
+  }
+};
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

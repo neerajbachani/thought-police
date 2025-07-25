@@ -83,9 +83,36 @@ class RedditApiService {
     }
   }
 
+   private async getAccessToken(): Promise<string> {
+    // Implement token fetching (copy from the route handler's getRedditToken function)
+    try {
+      const authString = Buffer.from(
+        `${process.env.REDDIT_CLIENT_ID}:${process.env.REDDIT_CLIENT_SECRET}`
+      ).toString('base64')
+      
+      const response = await this.axiosInstance.post('https://www.reddit.com/api/v1/access_token', 
+        'grant_type=client_credentials',
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Basic ${authString}`,
+            'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
+          }
+        }
+      );
+      
+      return response.data.access_token;
+    } catch (error) {
+      console.error('Failed to get Reddit token:', error);
+      throw error;
+    }
+  }
+
   private async makeRequest(url: string, source: 'reddit' = 'reddit'): Promise<any> {
     try {
       this.debug('Making request to:', url);
+
+      const token = await this.getAccessToken();  
    
       
       // ✅ Use oauth.reddit.com for authenticated requests
@@ -93,7 +120,7 @@ class RedditApiService {
       
       const response = await this.axiosInstance.get(authUrl, {
         headers: {
-          // 'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
           'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
         }
       });

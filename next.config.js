@@ -10,14 +10,6 @@ const nextConfig = {
       'images.pexels.com'
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/reddit/:path*',
-        destination: 'https://oauth.reddit.com/:path*',
-      },
-    ]
-  },
 }
 
 module.exports = nextConfig

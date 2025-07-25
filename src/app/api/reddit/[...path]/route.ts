@@ -11,8 +11,8 @@ async function getRedditToken() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
-        'Authorization': `Basic ${authString}`
+        'Authorization': `Basic ${authString}`,
+        'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',  // ✅ Added User-Agent
       },
       body: 'grant_type=client_credentials'
     })
@@ -35,6 +35,16 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ path: string[] }> }
 ) {
+  // ✅ Add CORS headers for local testing
+  const headers = new Headers()
+  headers.set('Access-Control-Allow-Origin', '*')
+  headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
+  headers.set('Access-Control-Allow-Headers', 'Content-Type')
+
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, { headers })
+  }
+
   const { path } = await context.params
   const searchParams = request.nextUrl.searchParams
   
@@ -48,24 +58,22 @@ export async function GET(
   })
   
   try {
-    // Step 1: Get Reddit OAuth token (required for every request)
     const redditToken = await getRedditToken()
     console.log('OAuth token obtained successfully')
 
-    // Step 2: Construct the authenticated URL (use oauth.reddit.com)
     const pathString = path.join('/')
     const queryString = searchParams.toString()
     const apiUrl = `https://oauth.reddit.com/${pathString}${queryString ? '?' + queryString : ''}`
     
     console.log('Making authenticated request to:', apiUrl)
     
-    const headers: Record<string, string> = {
-      'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${redditToken}`  // ✅ Critical: Use the token here
-    }
-    
-    const response = await fetch(apiUrl, { headers })
+    const response = await fetch(apiUrl, {
+      headers: {
+        'User-Agent': 'ThoughtPolice/1.0.0 (by /u/Over-Economist-3309)',  // ✅ Required
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${redditToken}`
+      }
+    })
     
     console.log('Reddit response status:', response.status)
     console.log('Reddit response headers:', Object.fromEntries(response.headers.entries()))
@@ -75,27 +83,16 @@ export async function GET(
       console.error(`Reddit API error: ${response.status} ${response.statusText}`)
       console.error('Error body:', errorText)
       
-      if (response.status === 404) {
-        return NextResponse.json({ error: 'User not found' }, { status: 404 })
-      } else if (response.status === 403) {
-        return NextResponse.json({ 
-          error: 'Access forbidden - Check authentication and Reddit app settings',
-          details: errorText
-        }, { status: 403 })
-      } else if (response.status === 429) {
-        return NextResponse.json({ error: 'Rate limited by Reddit' }, { status: 429 })
-      }
-      
       return NextResponse.json({ 
         error: `Reddit API error: ${response.status}`,
         details: errorText
-      }, { status: response.status })
+      }, { status: response.status, headers })
     }
     
     const data = await response.json()
     console.log('Reddit response successful, data keys:', Object.keys(data))
     
-    return NextResponse.json(data)
+    return NextResponse.json(data, { headers })
   } catch (error) {
     console.error('Reddit API route error:', error)
     return NextResponse.json(
@@ -103,7 +100,7 @@ export async function GET(
         error: 'Failed to fetch from Reddit',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { status: 500, headers }
     )
   }
 }
