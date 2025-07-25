@@ -189,6 +189,9 @@ const ContradictionCard: React.FC<ContradictionCardProps> = ({ contradiction, in
     return colors[category as keyof typeof colors] || 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300';
   };
 
+  console.log("--contradictions--", contradiction);
+  console.log("--contradictions context--", contradiction.context);
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
