@@ -36,12 +36,12 @@ class MultiModelPipeline {
   private verbose: boolean = false;
   
   // Optimized model selection - single strong model for summarization
-  private summarizerModel = 'openrouter/cypher-alpha:free';
-  private contradictionModel = 'openrouter/cypher-alpha:free';
+  private summarizerModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
+  private contradictionModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
   
   // Fallback to stronger models if budget allows
-  private premiumSummarizerModel = 'openrouter/cypher-alpha:free';
-  private premiumContradictionModel = 'openrouter/cypher-alpha:free';
+  private premiumSummarizerModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
+  private premiumContradictionModel = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
 
   constructor() {
     try {
