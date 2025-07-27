@@ -1,219 +1,216 @@
-# 🚔 Thought Police
+# Thought Police
 
-**Advanced Reddit User Analysis Platform**
-
-A sophisticated web application that analyzes Reddit user comment histories to detect contradictions, inconsistencies, and behavioral patterns using AI-powered analysis pipelines.
-
-## 🎯 Overview
-
-Thought Police is a gamified platform where users become "digital detectives" analyzing Reddit accounts for contradictions in their posting history. The application combines real-time Reddit API integration with advanced AI analysis to provide comprehensive reports on user behavior patterns.
-
-## ✨ Key Features
-
-### 🔍 Real-Time Reddit Analysis
-- Live integration with Reddit API
-- Analyzes up to 5,000 comments and posts per user
-- Comprehensive data fetching with intelligent caching
-- Support for users across all subreddits
-
-### 🤖 AI-Powered Detection
-- Multi-model analysis pipeline using Google Gemini AI
-- Advanced contradiction detection algorithms
-- Context-aware analysis with confidence scoring
-- Token budget management for cost optimization
-
-### 📊 Comprehensive Reporting
-- Detailed contradiction reports with evidence
-- Timeline visualization of user behavior
-- Statistical analysis and sentiment trends
-- Categorized contradictions (political, personal, factual, etc.)
-
-### 🏆 Gamification System
-- Rank progression system (Rookie Cop → Chief Inspector)
-- Achievement badges and leaderboards
-- Point-based scoring system
-- User profiles with police-themed cards
-
-### 🎨 Modern UI/UX
-- Responsive design with Tailwind CSS
-- Smooth animations with Framer Motion
-- Interactive data visualizations with Recharts
-- Dark/light theme support
-
-## 🛠️ Tech Stack
-
-### Frontend
-- **React 18** - Modern React with hooks and functional components
-- **TypeScript** - Type-safe development
-- **Vite** - Fast build tool and development server
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Utility-first styling
-- **Framer Motion** - Animation library
-- **Recharts** - Data visualization
-- **Lucide React** - Icon library
-
-### Backend Services
-- **Reddit API** - Real-time data fetching
-- **Google Gemini AI** - LLM analysis pipeline
-- **Axios** - HTTP client with retry logic
-- **Local Storage** - Client-side caching
-
-### Development Tools
-- **ESLint** - Code linting
-- **TypeScript ESLint** - TypeScript-specific linting
-- **PostCSS** - CSS processing
-- **Autoprefixer** - CSS vendor prefixes
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn package manager
-- Google AI API key (for Gemini integration)
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/thought-police.git
-   cd thought-police
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Setup**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_GOOGLE_AI_API_KEY=your_gemini_api_key_here
-   VITE_REDDIT_CLIENT_ID=your_reddit_client_id (optional)
-   VITE_REDDIT_CLIENT_SECRET=your_reddit_client_secret (optional)
-   ```
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser**
-   Navigate to `http://localhost:5173`
-
-### Building for Production
-
-```bash
-npm run build
-npm run preview
-```
-
-## 📱 Usage
-
-### Basic Analysis
-1. Enter a Reddit username (with or without u/ prefix)
-2. Click "Analyze User" to start the investigation
-3. Wait for the AI analysis to complete
-4. Review the detailed contradiction report
-
-### Understanding Results
-- **Contradictions**: Conflicting statements with evidence
-- **Confidence Score**: AI's certainty in the findings (0-100%)
-- **Timeline**: Chronological view of user behavior
-- **Categories**: Classification of contradiction types
-
-### Navigation
-- **Home**: Main analysis interface
-- **Leaderboard**: Top-performing officers
-- **Stats**: Platform-wide statistics
-- **Profile**: User profile and achievements
-
-## 🏗️ Project Structure
-
-```
-src/
-├── components/          # Reusable UI components
-│   ├── AnalysisResults.tsx
-│   ├── SearchForm.tsx
-│   ├── Navigation.tsx
-│   └── ...
-├── pages/              # Route-based page components
-│   ├── HomePage.tsx
-│   ├── LeaderboardPage.tsx
-│   └── ...
-├── services/           # Business logic and API integrations
-│   ├── analysisService.ts
-│   ├── redditApi.ts
-│   ├── multiModelPipeline.ts
-│   └── ...
-├── types/              # TypeScript type definitions
-├── data/               # Mock data and constants
-└── App.tsx             # Main application component
-```
-
-## 🔧 Configuration
-
-### Analysis Parameters
-- **Max Items**: Up to 5,000 comments/posts per analysis
-- **Max Age**: Content up to 365 days old
-- **Cache Duration**: 24 hours for repeated analyses
-- **Token Budget**: Configurable spending limits
-
-### Customization
-- Modify `src/services/tokenBudget.ts` for cost controls
-- Adjust cache settings in `src/services/cacheService.ts`
-- Update UI themes in `tailwind.config.js`
-
-## 🚨 Important Notes
-
-### Ethical Usage
-- This tool is for educational and entertainment purposes
-- Respect Reddit's Terms of Service and API limits
-- Do not use for harassment or malicious purposes
-- Consider privacy implications when analyzing users
-
-### Rate Limiting
-- Reddit API has built-in rate limiting
-- The application includes automatic retry logic
-- Large analyses may take several minutes
-
-### Data Privacy
-- No user data is stored permanently
-- Cache is cleared automatically after 24 hours
-- All analysis is performed client-side
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Use Tailwind for styling
-- Implement proper error handling
-- Add types for all new interfaces
-- Test components thoroughly
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Reddit API for providing access to user data
-- Google Gemini AI for advanced language analysis
-- The React and TypeScript communities
-- All contributors and testers
-
-## 📞 Support
-
-For questions, issues, or feature requests:
-- Open an issue on GitHub
-- Check existing documentation
-- Review the code comments for implementation details
+A Next.js web application that analyzes Reddit users’ comments and posts to surface ideological contradictions, provides contextual explanations, and ranks users on a public leaderboard. Built with Next, TypeScript, Tailwind CSS, Prisma, and integrates with the Reddit OAuth API and OpenRouter’s LLM endpoints for AI-driven summarization and contradiction detection.
 
 ---
 
-**Disclaimer**: This application is for educational purposes. Always respect user privacy and platform terms of service.
+## Table of Contents
+
+1. [Features](#features)  
+2. [Architecture](#architecture)  
+3. [Folder Structure](#folder-structure)  
+4. [Getting Started](#getting-started)  
+   1. [Prerequisites](#prerequisites)  
+   2. [Environment Variables](#environment-variables)  
+   3. [Installation](#installation)  
+   4. [Database Setup](#database-setup)  
+   5. [Local Development](#local-development)  
+   6. [Building and Production](#building-and-production)  
+5. [Usage](#usage)  
+6. [Key Modules](#key-modules)  
+7. [Contributing](#contributing)  
+8. [License](#license)
+
+---
+
+## Features
+
+- Fetch and cache Reddit user comments & posts (up to 1 year back) via OAuth  
+- Hierarchical AI-powered summarization (batch → meta-summary)  
+- AI-driven contradiction detection with confidence scoring & categories  
+- Local fallback heuristics when budget/API unavailable  
+- Leaderboard, user profiles, and per-user stats (karma, account age, activity)  
+- Streaming analysis for progressive UI updates  
+- Token-budget management to control API usage & cost  
+- Dark mode, responsive UI with Tailwind CSS & Framer Motion animations
+
+---
+
+## Architecture
+
+- **Frontend**:  
+  - Next.js App Router (`src/app/`)  
+  - React components (`src/components/`)  
+  - Tailwind CSS for styling  
+  - Framer Motion for animations  
+
+- **Backend (Server-Side)**:  
+  - Next.js API routes (`src/app/api/`)  
+  - `redditApi` service: paginated OAuth requests to Reddit’s API  
+  - `multiModelPipeline` service: AI summarization & contradiction detection (OpenRouter)  
+  - `analysisService` client: calls `/api/analyze`, wraps results for UI  
+  - `tokenBudget` service: tracks and limits LLM token costs  
+  - `cacheService`: caches analysis results to speed up repeat requests  
+
+- **Database**:  
+  - Prisma ORM (`prisma/schema.prisma`)  
+  - Migrations stored in `prisma/migrations/`  
+  - Stores users, analysis reports, and cached data (optional)
+
+---
+
+## Folder Structure
+
+```
+.
+├── .next/                   # Next.js build artifacts
+├── prisma/                  # Prisma schema & migrations
+│   ├── migrations/
+│   └── schema.prisma
+├── public/                  # Static assets
+│   └── thought-police-card.png
+├── src/
+│   ├── app/
+│   │   ├── api/             # Next.js API routes
+│   │   │   ├── analyze/route.ts
+│   │   │   ├── reddit/…     # Reddit proxy routes
+│   │   ├── leaderboard/     # Leaderboard page
+│   │   ├── login/           # Login page
+│   │   ├── profile/         # Profile page
+│   │   ├── stats/           # Stats page
+│   │   ├── layout.tsx       # Root layout
+│   │   └── page.tsx         # Home page
+│   ├── components/          # Reusable React components
+│   │   ├── AnalysisResults.tsx
+│   │   ├── Leaderboard.tsx
+│   │   ├── Navigation.tsx
+│   │   └── …  
+│   ├── lib/
+│   │   ├── services/
+│   │   │   ├── redditApi.ts
+│   │   │   ├── multiModelPipeline.ts
+│   │   │   ├── analysisService.ts
+│   │   │   ├── tokenBudget.ts
+│   │   │   └── cacheService.ts
+│   │   ├── contexts/        # React contexts (Auth, Theme)
+│   │   └── types/           # Shared TypeScript types
+│   └── globals.css          # Global styles
+├── next.config.js
+├── tailwind.config.js
+├── tsconfig.json
+├── package.json
+└── README.md
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js v18+  
+- npm or Yarn  
+- (Optional) A PostgreSQL or SQLite database for Prisma  
+
+### Environment Variables
+
+Create a `.env.local` in the project root with:
+
+```ini
+# .env.local
+REDDIT_CLIENT_ID=<your_reddit_client_id>
+REDDIT_CLIENT_SECRET=<your_reddit_client_secret>
+OPENROUTER_API_KEY=<your_openrouter_api_key>
+DATABASE_URL="postgresql://user:pass@localhost:5432/thought_police"  # or SQLite
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Installation
+
+```bash
+git clone https://github.com/yourusername/thought-police.git
+cd thought-police
+npm install
+```
+
+### Database Setup
+
+```bash
+npx prisma migrate dev     # Create database schema
+npx prisma generate        # Generate Prisma client
+```
+
+### Local Development
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000` in your browser.
+
+### Building and Production
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## Usage
+
+1. **Login** (if auth is enabled)  
+2. **Enter a Reddit username** on the home page  
+3. **Submit** to trigger analysis  
+4. **View**:
+   - Executive summary of contradictions  
+   - Detailed contradiction cards (earlier vs. later statements, dates, subreddits, context)  
+   - Overall stats, confidence scores, and quality indicators  
+5. **Leaderboard** to compare top users by number of contradictions  
+
+---
+
+## Key Modules
+
+- **redditApi.ts**  
+  - OAuth 2.0 token fetching  
+  - Paginated streaming of comments & posts with retry logic  
+
+- **multiModelPipeline.ts**  
+  - Deduplication & clustering of content  
+  - Dynamic batching for summarization (7k+ token batches)  
+  - Hierarchical meta-summarization for global context  
+  - Contradiction detection with AI prompts  
+  - Local fallback heuristics  
+
+- **tokenBudget.ts**  
+  - Tracks input/output token usage  
+  - Enforces budget thresholds & warnings  
+  - Persists usage in `localStorage`  
+
+- **analysisService.ts**  
+  - Client-side wrapper for `/api/analyze`  
+  - Streaming analysis for progress UI  
+  - Weighted confidence scoring  
+
+- **cacheService.ts**  
+  - Caches analysis reports by content hash  
+  - Reduces duplicate API usage  
+
+---
+
+## Contributing
+
+1. Fork the repository  
+2. Create a feature branch: `git checkout -b feat/my-feature`  
+3. Commit changes: `git commit -m "feat: add new feature"`  
+4. Push branch: `git push origin feat/my-feature`  
+5. Open a Pull Request  
+
+Please run `npm test` (if tests exist) and follow code style conventions.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
