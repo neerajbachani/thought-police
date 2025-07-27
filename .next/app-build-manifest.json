@@ -11,11 +11,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/api/auth/[...all]/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/auth/[...all]/route.js"
-    ],
     "/api/reddit/[...path]/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -26,25 +21,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/api/analyze/route.js"
     ],
-    "/leaderboard/page": [
+    "/api/auth/[...all]/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/leaderboard/page.js"
+      "static/chunks/app/api/auth/[...all]/route.js"
     ],
-    "/stats/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/stats/page.js"
-    ],
-    "/profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/profile/page.js"
-    ],
-    "/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/login/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

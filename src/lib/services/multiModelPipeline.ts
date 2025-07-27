@@ -36,12 +36,12 @@ class MultiModelPipeline {
   private verbose: boolean = false;
   
   // Optimized model selection - single strong model for summarization
-  private summarizerModel = 'qwen/qwen3-235b-a22b-07-25:free';
-  private contradictionModel = 'qwen/qwen3-235b-a22b-07-25:free';
+  private summarizerModel = 'deepseek/deepseek-r1:free';
+  private contradictionModel = 'deepseek/deepseek-r1:free';
   
   // Fallback to stronger models if budget allows
-  private premiumSummarizerModel = 'qwen/qwen3-235b-a22b-07-25:free';
-  private premiumContradictionModel = 'qwen/qwen3-235b-a22b-07-25:free';
+  private premiumSummarizerModel = 'deepseek/deepseek-r1:free';
+  private premiumContradictionModel = 'deepseek/deepseek-r1:free';
 
   constructor() {
     try {
@@ -210,7 +210,7 @@ class MultiModelPipeline {
     }
 
     // Dynamic batch sizing based on token limits
-    const maxTokensPerBatch = 3000; // Conservative limit
+    const maxTokensPerBatch = 9000; // Conservative limit
     const batches = this.createDynamicBatches(comments, maxTokensPerBatch);
     
     this.debug(`Created ${batches.length} dynamic batches for summarization`);
@@ -251,6 +251,18 @@ class MultiModelPipeline {
         allSummaries.push(...fallbackSummaries);
       }
     }
+
+    if (allSummaries.length > 0) {
+      const metaPrompt = this.buildMetaSummaryPrompt(allSummaries);
+      try {
+        const metaResponse = await this.makeOpenRouterRequest(useModel, metaPrompt);
+        // Store meta-summary (you can add it to the report or use in contradictions)
+        this.debug('Meta-summary generated:', metaResponse.substring(0, 200) + '...');
+        // For now, we'll pass it to contradictions; you could also attach to reportData
+      } catch (error) {
+        this.debug('Meta-summary failed, proceeding without:', error);
+      }
+    }
     
     return allSummaries;
   }
@@ -285,7 +297,7 @@ class MultiModelPipeline {
   private buildOptimizedSummarizationPrompt(batch: CommentWithId[]): string {
     const commentsText = batch.map(comment => {
       const dateStr = new Date(comment.date * 1000).toLocaleDateString();
-      return `${comment.id} (r/${comment.subreddit}, ${dateStr}): "${comment.text.substring(0, 500)}"`;
+      return `${comment.id} (r/${comment.subreddit}, ${dateStr}): "${comment.text}"`;
     }).join('\n\n');
 
     return `You are an expert content analyzer specializing in detecting ideological inconsistencies and opinion changes in social media content.
@@ -324,7 +336,19 @@ Analyze each comment now:`;
     }
   }
 
-  private async analyzeContradictions(summaries: SummaryResult[]): Promise<ContradictionResult[]> {
+  private buildMetaSummaryPrompt(summaries: SummaryResult[]): string {
+    const summariesText = summaries.map(s => `${s.id}: ${s.summary}`).join('\n');
+    return `You are an expert at merging summaries while preserving key inconsistencies and contexts.
+
+TASK: Merge these batch summaries into a single cohesive overview. Highlight potential cross-batch contradictions, ensure consistency in tone/stance, and condense without losing critical details.
+
+Summaries:
+${summariesText}
+
+OUTPUT: A merged summary in paragraph form, followed by a list of highlighted potential inconsistencies.`;
+  }
+
+  private async analyzeContradictions(summaries: SummaryResult[], metaSummary?: string): Promise<ContradictionResult[]> {
     if (!this.isAvailable || summaries.length < 2) {
       return this.createFallbackContradictions(summaries);
     }
@@ -336,7 +360,7 @@ Analyze each comment now:`;
       const budgetStatus = tokenBudget.getBudgetStatus();
       const useModel = budgetStatus.remaining > 0.5 ? this.premiumContradictionModel : this.contradictionModel;
       
-      const prompt = this.buildOptimizedContradictionPrompt(summaries);
+      const prompt = this.buildOptimizedContradictionPrompt(summaries, metaSummary);
       const estimatedTokens = tokenBudget.estimateTokens(prompt);
       
       if (!tokenBudget.canAfford(useModel, estimatedTokens)) {
@@ -352,13 +376,15 @@ Analyze each comment now:`;
     }
   }
 
-  private buildOptimizedContradictionPrompt(summaries: SummaryResult[]): string {
+  private buildOptimizedContradictionPrompt(summaries: SummaryResult[], metaSummary?: string): string {
     const summariesText = summaries.map(s => 
       `${s.id}: ${s.summary}`
     ).join('\n');
 
-    return `You are an expert at detecting ideological inconsistencies and contradictory viewpoints in user-generated content.
+    const metaSection = metaSummary ? `\n Merged Overview:${metaSummary}\n` : '';
 
+    return `You are an expert at detecting ideological inconsistencies and contradictory viewpoints in user-generated content.
+${metaSection}
 TASK: Identify genuine contradictions between these summarized statements. Focus on:
 - Direct opposing viewpoints on the same topic
 - Ideological flip-flops without reasonable explanation  
@@ -406,7 +432,7 @@ Analyze with high standards for what constitutes a real contradiction:`;
             content: prompt
           }
         ],
-        temperature: 0.1,
+        temperature: 0,
         max_tokens: maxOutputTokens,
         top_p: 0.9
       })
